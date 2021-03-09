@@ -21,7 +21,8 @@ const MoviesCard = ({
     <a
       href={url}
       className="movies__link"
-      target="youtube"
+      target="_blank"
+      rel="noreferrer"
     >
       <img
         src={image}

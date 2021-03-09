@@ -7,13 +7,34 @@ const Portfolio = () => (
     <nav>
       <ul className="portfolio__sites">
         <li className="portfolio__site">
-          <a href="/#" className="portfolio__site-link">Статичный сайт</a>
+          <a
+            href="https://github.com/"
+            className="portfolio__site-link"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Статичный сайт
+          </a>
         </li>
         <li className="portfolio__site">
-          <a href="/#" className="portfolio__site-link">Адаптивный сайт</a>
+          <a
+            href="https://github.com/"
+            className="portfolio__site-link"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Адаптивный сайт
+          </a>
         </li>
         <li className="portfolio__site">
-          <a href="/#" className="portfolio__site-link">Одностраничное приложение</a>
+          <a
+            href="https://github.com/"
+            className="portfolio__site-link"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Одностраничное приложение
+          </a>
         </li>
       </ul>
     </nav>
