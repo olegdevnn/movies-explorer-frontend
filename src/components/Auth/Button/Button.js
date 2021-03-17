@@ -10,6 +10,7 @@ const Button = ({
     type={button ? 'button' : 'submit'}
     className={`button ${!isActive ? 'button_disabled' : ''}`}
     aria-label={ariaLabel}
+    disabled={!isActive}
   >
     {children}
   </button>

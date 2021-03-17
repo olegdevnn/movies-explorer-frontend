@@ -1,81 +1,129 @@
 import './Profile.css';
-import React, { useState } from 'react';
+import React, {
+  useContext, useEffect,
+} from 'react';
 
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
 
-const Profile = ({ actionLink, logoutLink }) => {
-  const [data, setData] = useState({
-    name: 'Виталий',
-    email: 'pochta@yandex.ru',
-  });
+import CurrentUserContext from '../../contexts/CurrentUserContext';
+import useFormWithValidation from '../Parts/useFormWithValidation';
 
-  const history = useHistory();
+const Profile = ({
+  onUpdateUser, onSignOut, error, message, onClearMessages, isLoading,
+}) => {
+  const {
+    values, errors, isValid, setIsValid, handleChange, setValues,
+  } = useFormWithValidation();
+
+  const currentUser = useContext(CurrentUserContext);
+
+  useEffect(() => {
+    setValues({
+      name: currentUser.name,
+      email: currentUser.email,
+    });
+  }, [currentUser, setValues]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    history.push(actionLink);
+
+    onUpdateUser({
+      name: values.name,
+      email: values.email,
+    });
   };
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setData((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
+  const handleFocus = () => onClearMessages();
+
+  useEffect(() => {
+    if (values.name === currentUser.name
+        && values.email === currentUser.email) {
+      setIsValid(false);
+    }
+  }, [values, currentUser, setIsValid]);
 
   return (
     <main className="profile">
-      <h2 className="profile__title">Привет, Виталий!</h2>
+      <h2 className="profile__title">
+        Привет,
+        {' '}
+        {currentUser.name}
+        !
+      </h2>
       <form className="profile__form" onSubmit={handleSubmit}>
         <fieldset className="profile__fieldset">
           <label htmlFor="name" className="profile__label">
             Имя
             <input
               type="text"
-              value={data.name}
-              placeholder="Имя"
-              className="profile__input"
               id="name"
-              onChange={handleChange}
-              size="3"
+              name="name"
+              placeholder="Имя"
+              value={values.name || ''}
               required
+              pattern="^[a-zA-Z- ]+$"
+              size="3"
               minLength="2"
               maxLength="30"
+              className="profile__input"
+              onChange={handleChange}
+              onFocus={handleFocus}
+              disabled={isLoading}
             />
+
           </label>
+          <span className="profile__input-error">
+            {errors.name}
+          </span>
           <label htmlFor="email" className="profile__label">
             Почта
             <input
               type="email"
-              className="profile__input"
-              pattern=".+@.+\.[a-z]{2,}$"
-              value={data.email}
-              placeholder="E-Mail"
               id="email"
-              onChange={handleChange}
-              size="3"
+              name="email"
+              placeholder="E-Mail"
+              value={values.email || ''}
               required
-              minLength="2"
+              size="3"
+              minLength="8"
               maxLength="30"
+              className="profile__input"
+              onChange={handleChange}
+              onFocus={handleFocus}
+              disabled={isLoading}
             />
           </label>
+          <span className="profile__input-error">
+            {errors.email}
+          </span>
         </fieldset>
         <div>
+          {error && (
+          <p className="profile__message profile__message_error">
+            {error}
+          </p>
+          )}
+          {message && (
+          <p className="profile__message">
+            {message}
+          </p>
+          )}
           <button
             type="submit"
-            className="profile__button-save"
+            className={`profile__button-save 
+              ${!isValid ? 'profile__button-save_disabled' : ''}
+            `}
+            disabled={!isValid}
           >
             Редактировать
           </button>
-          <Link
-            to={logoutLink}
-            className="profile__link"
+          <button
+            type="button"
+            onClick={onSignOut}
+            className="profile__button-logout"
           >
             Выйти из аккаунта
-          </Link>
+          </button>
         </div>
       </form>
     </main>
@@ -83,8 +131,17 @@ const Profile = ({ actionLink, logoutLink }) => {
 };
 
 Profile.propTypes = {
-  actionLink: PropTypes.string.isRequired,
-  logoutLink: PropTypes.string.isRequired,
+  error: PropTypes.string,
+  message: PropTypes.string,
+  isLoading: PropTypes.bool.isRequired,
+  onSignOut: PropTypes.func.isRequired,
+  onClearMessages: PropTypes.func.isRequired,
+  onUpdateUser: PropTypes.func.isRequired,
+};
+
+Profile.defaultProps = {
+  error: '',
+  message: '',
 };
 
 export default Profile;

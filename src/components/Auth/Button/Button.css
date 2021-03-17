@@ -16,11 +16,13 @@
 }
 
 .button_disabled {
+  cursor: not-allowed;
+
   color: #000;
   background: #f9f9f9;
 }
 
-.button:hover {
+.button:hover:enabled {
   transition: opacity 0.2s linear;
 
   opacity: 0.6;

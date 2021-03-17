@@ -3,14 +3,14 @@ import React from 'react';
 import './Auth.css';
 import PropTypes from 'prop-types';
 
-import { projectName } from '../../utils/config';
+import { PROJECT_NAME } from '../../utils/config';
 import Logo from '../Parts/Logo/Logo';
 
 const Auth = ({ homeLink, children, title }) => (
   <main className="auth">
     <Logo
       link={homeLink}
-      name={projectName}
+      name={PROJECT_NAME}
     />
     <h2 className="auth__title">{title}</h2>
     {children}

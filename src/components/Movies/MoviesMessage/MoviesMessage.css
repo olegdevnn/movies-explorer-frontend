@@ -1,11 +1,13 @@
-.movies-not-found {
+.movies-message {
   padding: 0 70px;
 }
 
-.movies-not-found__title {
+.movies-message__title {
   padding: 22px;
 
   text-align: center;
+
+  white-space: pre-line;
   letter-spacing: -0.04em;
 
   background: #eee;
@@ -17,12 +19,12 @@
 }
 
 @media (max-width: 768px) {
-  .movies-not-found {
+  .movies-message {
     padding-right: 30px;
     padding-left: 30px;
   }
 
-  .movies-not-found__title {
+  .movies-message__title {
     padding: 20px;
 
     font-size: 20px;
@@ -30,11 +32,11 @@
 }
 
 @media (max-width: 320px) {
-  .movies-not-found {
+  .movies-message {
     padding: 0 20px 0;
   }
 
-  .movies-not-found__title {
+  .movies-message__title {
     padding: 14px;
 
     font-size: 16px;

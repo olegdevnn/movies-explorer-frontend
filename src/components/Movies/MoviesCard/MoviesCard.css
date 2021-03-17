@@ -97,6 +97,10 @@
   grid-area: movies__favorite_active;
 }
 
+.movies__button-favorite_saved {
+  background: center/contain no-repeat url(../../../images/favorite-saved.svg);
+}
+
 .movies__button-favorite:hover {
   transition: opacity 0.2s linear;
 

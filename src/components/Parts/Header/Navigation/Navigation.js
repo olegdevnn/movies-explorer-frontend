@@ -11,7 +11,7 @@ import {
   HOME_LINK,
 } from '../../../../utils/config';
 
-const Navigation = ({ isMenu }) => {
+const Navigation = ({ isMenu, isMainPage }) => {
   const menu = [
     {
       name: 'Фильмы',
@@ -26,18 +26,25 @@ const Navigation = ({ isMenu }) => {
   return (
     <nav className={`navigation ${isMenu ? 'navigation_active' : ''}`}>
       <div className="navigation__links">
-        <NavLink
-          key="main"
-          to={HOME_LINK}
-          className={`navigation__link ${!isMenu ? 'navigation__link_visible' : ''}`}
-        >
-          Главная
-        </NavLink>
+        {!isMainPage
+          && (
+          <NavLink
+            key="main"
+            to={HOME_LINK}
+            className={`navigation__link 
+            ${!isMenu ? 'navigation__link_visible' : ''}
+              }`}
+          >
+            Главная
+          </NavLink>
+          )}
         {menu.map(({ link, name }) => (
           <NavLink
             key={link}
             to={link}
-            className="navigation__link"
+            className={`navigation__link
+              ${isMainPage ? 'navigation__link_main-page' : ''}
+            `}
             activeClassName="navigation__link_active"
           >
             {name}
@@ -47,7 +54,10 @@ const Navigation = ({ isMenu }) => {
       <NavLink
         key="profile"
         to={PROFILE_LINK}
-        className="navigation__link navigation__link-profile"
+        className={`navigation__link navigation__link-profile
+          ${isMainPage ? 'navigation__link_main-page' : ''}
+          ${isMainPage ? 'navigation__link-profile_main-page' : ''}
+        `}
         activeClassName="navigation__link-profile_active"
       >
         Аккаунт
@@ -58,6 +68,7 @@ const Navigation = ({ isMenu }) => {
 
 Navigation.propTypes = {
   isMenu: PropTypes.bool.isRequired,
+  isMainPage: PropTypes.bool.isRequired,
 };
 
 export default Navigation;

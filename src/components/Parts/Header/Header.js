@@ -1,20 +1,21 @@
 import './Header.css';
 import React, { useState, useEffect } from 'react';
 
-import { useLocation } from 'react-router';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Link, useLocation } from 'react-router-dom';
 
 import {
-  HOME_LINK, projectName,
+  HOME_LINK, PROJECT_NAME,
   SING_IN_LINK,
   SING_UP_LINK,
 } from '../../../utils/config';
 import Logo from '../Logo/Logo';
 import Navigation from './Navigation/Navigation';
 
-const Header = () => {
+const Header = ({ loggedIn }) => {
   const { pathname } = useLocation();
   const [isMenu, setIsMenu] = useState(false);
+  const [isMainPage, setIsMainPage] = useState(false);
 
   const isMenuHandle = () => {
     setIsMenu(!isMenu);
@@ -22,12 +23,16 @@ const Header = () => {
 
   useEffect(() => {
     setIsMenu(false);
+    setIsMainPage(pathname === '/');
   }, [pathname]);
 
-  if (pathname === '/') {
-    return (
-      <header className="header header_theme_blue">
-        <Logo name={projectName} />
+  return (
+    <header className={`header ${isMainPage ? 'header_theme_blue' : ''}`}>
+      <Logo
+        link={!isMainPage ? HOME_LINK : ''}
+        name={PROJECT_NAME}
+      />
+      {!loggedIn && (
         <nav className="header__menu">
           <Link
             className="header__link header__link-signup"
@@ -42,29 +47,31 @@ const Header = () => {
             Войти
           </Link>
         </nav>
-      </header>
-    );
-  }
-
-  return (
-    <header className="header">
-      <Logo
-        link={HOME_LINK}
-        name={projectName}
-      />
-      <div className={` ${isMenu ? 'header__menu-container' : ''}`} />
-      <Navigation
-        isMenu={isMenu}
-      />
-      <button
-        type="button"
-        className={`header__button-menu ${isMenu ? 'header__button-menu-close' : ''}`}
-        onClick={isMenuHandle}
-        aria-label={!isMenu ? 'Открыть меню' : 'Закрыть меню'}
-      />
+      )}
+      {loggedIn && <div className={` ${isMenu ? 'header__menu-container' : ''}`} />}
+      {loggedIn && (
+        <Navigation
+          isMenu={isMenu}
+          isMainPage={isMainPage}
+        />
+      )}
+      {loggedIn && (
+        <button
+          type="button"
+          className={`header__button-menu
+            ${isMainPage ? 'header__button-menu_main-page' : ''}
+            ${isMenu ? 'header__button-menu-close' : ''}
+        `}
+          onClick={isMenuHandle}
+          aria-label={!isMenu ? 'Открыть меню' : 'Закрыть меню'}
+        />
+      )}
     </header>
-
   );
+};
+
+Header.propTypes = {
+  loggedIn: PropTypes.bool.isRequired,
 };
 
 export default Header;

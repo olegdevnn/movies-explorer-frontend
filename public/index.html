@@ -11,6 +11,29 @@
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon.svg" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+<!--     Production environment-->
+        <meta http-equiv="Content-Security-Policy" content="
+            default-src 'self';
+            font-src 'self';
+            manifest-src 'self';
+            script-src https: 'unsafe-inline';
+            connect-src 'self' localhost:3000 https://api.oleg-zvonilov-diploma.students.nomoredomains.monster api.nomoreparties.co/beatfilm-movies;
+            img-src *;
+            style-src 'self';
+            base-uri 'self';
+            form-action 'self';
+        ">
+<!--     Development environment-->
+<!--    <meta http-equiv="Content-Security-Policy" content="-->
+<!--        default-src 'self';-->
+<!--        font-src 'self';-->
+<!--        manifest-src 'self';-->
+<!--        connect-src 'self' localhost:3000 https://api.oleg-zvonilov-diploma.students.nomoredomains.monster https://api.nomoreparties.co;-->
+<!--        img-src *;-->
+<!--        style-src 'unsafe-inline';-->
+<!--        base-uri 'self';-->
+<!--        form-action 'self';-->
+<!--    ">-->
     <title>Дипломный проект</title>
   </head>
   <body>

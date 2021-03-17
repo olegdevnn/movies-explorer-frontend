@@ -60,6 +60,16 @@
   line-height: 16px;
 }
 
+@media (min-width: 768px) {
+  .navigation__link_main-page {
+    color: #fff;
+  }
+
+  .navigation__link-profile_main-page {
+    background-image: url('../../../../images/profile-link-white.svg');
+  }
+}
+
 @media (max-width: 768px) {
   .navigation {
     position: fixed;

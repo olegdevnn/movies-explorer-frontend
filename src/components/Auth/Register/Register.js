@@ -1,59 +1,94 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router';
 
+import useFormWithValidation from '../../Parts/useFormWithValidation';
 import Button from '../Button/Button';
+import Error from '../Error/Error';
 import Fieldset from '../Fieldset/Fieldset';
 import Form from '../Form/Form';
 import Input from '../Input/Input';
 import Link from '../Link/Link';
 import Text from '../Text/Text';
 
-const Register = ({ actionLink, loginLink }) => {
-  const history = useHistory();
+const Register = ({
+  onRegister, loginLink, error, onClearMessages, isLoading,
+}) => {
+  const {
+    values, errors, isValid, handleChange,
+  } = useFormWithValidation();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    history.push(actionLink);
+
+    if (!values.name || !values.email || !values.password) {
+      return;
+    }
+
+    onRegister({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    });
   };
+
+  const handleFocus = () => onClearMessages();
 
   return (
     <Form onSubmit={handleSubmit}>
       <Fieldset>
         <Input
-          title="Имя"
+          type="text"
           id="name"
+          name="name"
+          title="Имя"
           placeholder="Имя"
-          value="Виталий"
+          value={values.name}
+          errorMessage={errors.name}
           required
+          pattern="^[a-zA-Z- ]+$"
           minLength={2}
           maxLength={30}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          disabled={isLoading}
         />
         <Input
-          title="E-mail"
-          placeholder="E-mail"
           type="email"
           id="email"
-          value="pochta@yandex.ru"
+          name="email"
+          title="E-mail"
+          placeholder="E-mail"
+          value={values.email}
+          errorMessage={errors.email}
           required
-          minLength={2}
+          minLength={8}
           maxLength={30}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          disabled={isLoading}
         />
         <Input
-          title="Пароль"
-          placeholder="Пароль"
           type="password"
           id="password"
-          value="11111111111111"
-          isError
+          name="password"
+          title="Пароль"
+          placeholder="Пароль"
+          value={values.password}
+          errorMessage={errors.password}
           required
-          minLength={2}
+          minLength={8}
           maxLength={30}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          disabled={isLoading}
         />
       </Fieldset>
       <div>
-        <Button>
+        {error && <Error>{error}</Error>}
+        <Button
+          isActive={isValid}
+        >
           Зарегистрироваться
         </Button>
         <Text>
@@ -70,8 +105,15 @@ const Register = ({ actionLink, loginLink }) => {
 };
 
 Register.propTypes = {
-  actionLink: PropTypes.string.isRequired,
+  error: PropTypes.string,
+  onRegister: PropTypes.func.isRequired,
   loginLink: PropTypes.string.isRequired,
+  onClearMessages: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
+
+Register.defaultProps = {
+  error: '',
 };
 
 export default Register;

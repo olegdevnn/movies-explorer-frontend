@@ -1,48 +1,77 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router';
 
+import useFormWithValidation from '../../Parts/useFormWithValidation';
 import Button from '../Button/Button';
+import Error from '../Error/Error';
 import Fieldset from '../Fieldset/Fieldset';
 import Form from '../Form/Form';
 import Input from '../Input/Input';
 import Link from '../Link/Link';
 import Text from '../Text/Text';
 
-const Login = ({ actionLink, registerLink }) => {
-  const history = useHistory();
+const Login = ({
+  onLogin, registerLink, error, onClearMessages, isLoading,
+}) => {
+  const {
+    values, errors, isValid, handleChange,
+  } = useFormWithValidation();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    history.push(actionLink);
+
+    if (!values.email || !values.password) {
+      return;
+    }
+
+    onLogin({
+      email: values.email,
+      password: values.password,
+    });
   };
+
+  const handleFocus = () => onClearMessages();
 
   return (
     <Form onSubmit={handleSubmit}>
       <Fieldset>
         <Input
+          type="email"
+          id="email"
+          name="email"
           title="E-mail"
           placeholder="E-mail"
-          id="email"
-          type="email"
-          value="pochta@yandex.ru"
+          value={values.email}
+          errorMessage={errors.email}
           required
-          minLength={2}
+          minLength={8}
           maxLength={30}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          disabled={isLoading}
         />
         <Input
+          type="password"
+          name="password"
+          id="password"
           title="Пароль"
           placeholder="Пароль"
-          type="password"
-          id="password"
+          value={values.password}
+          errorMessage={errors.password}
           required
-          minLength={2}
+          minLength={8}
           maxLength={30}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          disabled={isLoading}
         />
       </Fieldset>
       <div>
-        <Button>
+        {error && <Error>{error}</Error>}
+        <Button
+          isActive={isValid}
+        >
           Войти
         </Button>
         <Text>
@@ -59,8 +88,15 @@ const Login = ({ actionLink, registerLink }) => {
 };
 
 Login.propTypes = {
-  actionLink: PropTypes.string.isRequired,
+  error: PropTypes.string,
+  onLogin: PropTypes.func.isRequired,
   registerLink: PropTypes.string.isRequired,
+  onClearMessages: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
+
+Login.defaultProps = {
+  error: '',
 };
 
 export default Login;

@@ -119,8 +119,6 @@
   }
 }
 
-/* Данный элемент нужно менять на разрешении 530, иначе поле ввода
- будет короткое */
 @media (max-width: 530px) {
   .search-form {
     padding: 80px 10px 10px;
@@ -161,7 +159,7 @@
   }
 
   .search-form__input {
-    padding: 0;
+    padding: 0 7px;
 
     background: none;
 
