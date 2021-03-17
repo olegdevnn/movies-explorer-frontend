@@ -12,6 +12,7 @@ import SearchForm from './SearchForm/SearchForm';
 const Movies = ({
   movies, isLoading, moreMovies, onMovieSave, onSearch,
   moviesFiltered, errLoadingMovies, isMoviesFiltered,
+  queryFilters,
 }) => {
   if (errLoadingMovies) {
     return <MoviesError onSearch={onSearch} />;
@@ -22,6 +23,7 @@ const Movies = ({
       <main className="movies">
         <SearchForm
           onSearch={onSearch}
+          queryFilters={queryFilters}
         />
         {isLoading && <Preloader />}
         {!isLoading && <MoviesMessage message="Начните искать фильмы" />}
@@ -38,6 +40,7 @@ const Movies = ({
         <MoviesCardList
           movies={movies}
           onMovieSave={onMovieSave}
+          queryFilters={queryFilters}
         />
       )}
       {isLoading && <Preloader />}
@@ -58,6 +61,10 @@ const Movies = ({
 };
 
 Movies.propTypes = {
+  queryFilters: PropTypes.shape({
+    query: PropTypes.string,
+    shortFilms: PropTypes.bool,
+  }),
   isLoading: PropTypes.bool.isRequired,
   onSearch: PropTypes.func.isRequired,
   moreMovies: PropTypes.func.isRequired,
@@ -66,6 +73,13 @@ Movies.propTypes = {
   onMovieSave: PropTypes.func.isRequired,
   movies: PropTypes.arrayOf(PropTypes.object).isRequired,
   moviesFiltered: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
+
+Movies.defaultProps = {
+  queryFilters: {
+    query: '',
+    shortFilms: false,
+  },
 };
 
 export default Movies;

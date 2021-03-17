@@ -52,6 +52,12 @@ function App() {
   const [isErrorApiMovies, setIsErrorApiMovies] = useState(false);
   const [apiErrorMessage, setApiErrorMessage] = useState('');
   const [apiMessage, setApiMessage] = useState('');
+  const [queryFilters, setQueryFilters] = useState(
+    {
+      query: '',
+      shortFilms: false,
+    },
+  );
 
   const [currentUser, setCurrentUser] = useState({
     name: '',
@@ -151,6 +157,10 @@ function App() {
     }
   }, [loggedIn]);
 
+  useEffect(() => {
+    setQueryFilters({ query: '', shortFilms: false });
+  }, [location]);
+
   const getToken = useCallback(() => {
     MainApi
       .getToken()
@@ -161,18 +171,29 @@ function App() {
     getToken();
   }, [getToken, location]);
 
-  function deleteMovie(movie) {
-    const movieSavedCur = moviesSaved.filter((i) => i.id === movie.id)[0];
+  function deleteMovie(movieSaved) {
+    const localMoviesSaved = JSON.parse(localStorage.getItem('moviesSaved'));
 
     MainApi
-      .deleteMovie(movieSavedCur._id)
+      .deleteMovie(movieSaved._id)
       .then((newMovie) => {
-        setMoviesSaved((prevMovies) => prevMovies.filter(
+        const newLocalMoviesSaved = localMoviesSaved.filter(
           (c) => (c.id !== newMovie.movieId),
-        ));
-        setMovies((prevMovies) => prevMovies.map(
+        );
+
+        localStorage.setItem('moviesSaved', JSON.stringify(newLocalMoviesSaved));
+
+        const newMoviesSaved = moviesSaved.filter(
+          (c) => (c.id !== newMovie.movieId),
+        );
+
+        setMoviesSaved(newMoviesSaved);
+
+        const newMovies = movies.map(
           (c) => (c.id === newMovie.movieId ? Object.assign(c, { saved: false }) : c),
-        ));
+        );
+
+        setMovies(newMovies);
       })
       .catch(() => {
         setIsErrorApiMovies(true);
@@ -180,12 +201,15 @@ function App() {
   }
 
   function addMovie(movie) {
-    const movieCur = movies.filter((i) => i.id === movie.id)[0];
+    const localMovies = JSON.parse(localStorage.getItem('movies'));
+    const localMoviesSaved = JSON.parse(localStorage.getItem('moviesSaved'));
+
+    const movieCopy = localMovies.filter((i) => i.id === movie.id)[0];
 
     const {
       country, director, duration, year, description,
       image, trailerLink, nameRU, nameEN, id,
-    } = movieCur;
+    } = movieCopy;
 
     const createMovie = {
       country: country || SEED_DATA_TEXT,
@@ -204,20 +228,29 @@ function App() {
     MainApi
       .addMovie(createMovie)
       .then((newMovie) => {
-        setMoviesSaved((prevMovies) => [...prevMovies, {
+        const newLocalMoviesSaved = [...localMoviesSaved, {
           alt: newMovie.nameRU.replace(/"/g, ''),
           name: newMovie.nameRU,
+          nameRU: newMovie.nameRU,
           _id: newMovie._id,
           id: newMovie.movieId,
+          movieId: newMovie.movieId,
           url: newMovie.trailer,
           durationName: getDurationText(newMovie.duration),
           image: {
             urlFull: newMovie.image,
           },
-        }]);
-        setMovies((prevMovies) => prevMovies.map(
+        }];
+
+        localStorage.setItem('moviesSaved', JSON.stringify(newLocalMoviesSaved));
+
+        setMoviesSaved(newLocalMoviesSaved);
+
+        const newMovies = movies.map(
           (c) => (c.id === newMovie.movieId ? Object.assign(c, { saved: true }) : c),
-        ));
+        );
+
+        setMovies(newMovies);
       })
       .catch(() => {
         setIsErrorApiMovies(true);
@@ -225,10 +258,11 @@ function App() {
   }
 
   function handleMovieSave(movie) {
-    const isSaved = moviesSaved.some((i) => i.id === movie.id);
+    const localMoviesSaved = JSON.parse(localStorage.getItem('moviesSaved'));
+    const movieSaved = localMoviesSaved.filter((i) => i.id === movie.id)[0];
 
-    if (isSaved) {
-      deleteMovie(movie);
+    if (movieSaved) {
+      deleteMovie(movieSaved);
     } else {
       addMovie(movie);
     }
@@ -261,12 +295,16 @@ function App() {
     return cardsRow;
   }
 
-  function filterMovies({ inputMovies, query, shortFilms }) {
+  function filterMovies({
+    inputMovies, inputMoviesSaved, query, shortFilms,
+  }) {
     return inputMovies.reduce(
       (acc, item) => {
-        Object.assign(item, {
-          saved: moviesSaved.some((itemSaved) => itemSaved.movieId === item.id),
-        });
+        if (inputMoviesSaved) {
+          Object.assign(item, {
+            saved: inputMoviesSaved.some((itemSaved) => itemSaved.movieId === item.id),
+          });
+        }
 
         if (
           ((query && item.nameRU.toLowerCase().indexOf(query) !== -1) || !query)
@@ -279,22 +317,30 @@ function App() {
     );
   }
 
-  async function handleSearch({ query, shortFilms }) {
-    const localMovies = await JSON.parse(localStorage.getItem('movies'));
+  function handleSearch({ query, shortFilms }) {
+    const localMovies = JSON.parse(localStorage.getItem('movies'));
+    const localMoviesSaved = JSON.parse(localStorage.getItem('moviesSaved'));
 
     const searchMovies = filterMovies(
-      { inputMovies: localMovies, query, shortFilms },
+      {
+        inputMovies: localMovies,
+        inputMoviesSaved: localMoviesSaved,
+        query,
+        shortFilms,
+      },
+    );
+
+    const searchMoviesSaved = filterMovies(
+      {
+        inputMovies: localMoviesSaved,
+        query,
+        shortFilms,
+      },
     );
 
     setMoviesFiltered(searchMovies);
     setIsMoviesFiltered(true);
     setMovies([]);
-
-    const localMoviesSaved = JSON.parse(localStorage.getItem('moviesSaved'));
-
-    const searchMoviesSaved = filterMovies(
-      { inputMovies: localMoviesSaved, query, shortFilms },
-    );
 
     setMoviesSaved([]);
 
@@ -443,6 +489,7 @@ function App() {
             component={Movies}
             loggedIn={loggedIn}
             movies={movies}
+            queryFilters={queryFilters}
             errLoadingMovies={isErrorApiMovies}
             onMovieSave={handleMovieSave}
             redirectLink={HOME_LINK}
@@ -461,6 +508,7 @@ function App() {
             loggedIn={loggedIn}
             isVerifyAuth={isVerifyAuth}
             movies={moviesSaved}
+            queryFilters={queryFilters}
             isSaved
             errLoadingMovies={isErrorApiMovies}
             onMovieSave={handleMovieSave}

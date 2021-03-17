@@ -1,13 +1,18 @@
 import './SearchForm.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
 import FilterCheckbox from './FilterCheckbox/FilterCheckbox';
 
-const SearchForm = ({ onSearch }) => {
+const SearchForm = ({ onSearch, queryFilters }) => {
   const [query, setQuery] = useState('');
-  const [shortFilms, setShortFilms] = useState('');
+  const [shortFilms, setShortFilms] = useState(false);
+
+  useEffect(() => {
+    setQuery(queryFilters.query);
+    setShortFilms(queryFilters.shortFilms);
+  }, [queryFilters]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,16 +25,23 @@ const SearchForm = ({ onSearch }) => {
     }
   };
 
-  const handleChange = (e) => setQuery(e.target.value);
-  const handleClick = ({ checked }) => {
-    setShortFilms((prevState) => {
-      onSearch({
-        query,
-        shortFilms: !prevState,
-      });
+  const handleChange = (e) => {
+    e.target.setCustomValidity('');
+    setQuery(e.target.value);
+  };
 
-      return checked;
+  const handleShortFilmsClick = ({ checked }) => {
+    setShortFilms(checked);
+    onSearch({
+      query,
+      shortFilms: checked,
     });
+  };
+
+  const handleFocus = (e) => {
+    if (query.length === 0) {
+      e.target.setCustomValidity('Нужно ввести ключевое слово');
+    }
   };
 
   return (
@@ -44,15 +56,8 @@ const SearchForm = ({ onSearch }) => {
             minLength="1"
             maxLength="100"
             value={query}
-            onFocus={(e) => {
-              if (query.length === 0) {
-                e.target.setCustomValidity('Нужно ввести ключевое слово');
-              }
-            }}
-            onChange={(e) => {
-              e.target.setCustomValidity('');
-              handleChange(e);
-            }}
+            onFocus={handleFocus}
+            onChange={handleChange}
             size="1"
             required
           />
@@ -64,7 +69,7 @@ const SearchForm = ({ onSearch }) => {
           </button>
         </div>
         <FilterCheckbox
-          onChange={handleClick}
+          onChange={handleShortFilmsClick}
         />
       </form>
       <hr className="search-form__hr" />
@@ -74,6 +79,17 @@ const SearchForm = ({ onSearch }) => {
 
 SearchForm.propTypes = {
   onSearch: PropTypes.func.isRequired,
+  queryFilters: PropTypes.shape({
+    query: PropTypes.string,
+    shortFilms: PropTypes.bool,
+  }),
+};
+
+SearchForm.defaultProps = {
+  queryFilters: {
+    query: '',
+    shortFilms: false,
+  },
 };
 
 export default SearchForm;
