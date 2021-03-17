@@ -14,6 +14,21 @@ const TIMES_PRELOADER = 500; // Время эмуляции загрузчика
 const SEED_DATA_TEXT = '----------';
 const SEED_DATA_NUMBER = '----------';
 
+const FOOTER_MENU = [
+  {
+    name: 'Яндекс.Практикум',
+    link: 'https://praktikum.yandex.ru/',
+  },
+  {
+    name: 'Github',
+    link: 'https://github.com/',
+  },
+  {
+    name: 'Facebook',
+    link: 'http://facebook.com/',
+  },
+];
+
 const HTTP_CODES = {
   UNAUTHORIZED: 401,
 };
@@ -35,4 +50,5 @@ export {
   SEED_DATA_TEXT,
   SEED_DATA_NUMBER,
   HTTP_CODES,
+  FOOTER_MENU,
 };

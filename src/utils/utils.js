@@ -6,17 +6,10 @@ const consoleDebug = (message) => {
   }
 };
 
-const verifyStrongPassword = (password) => {
-  if (password.match(/[0-9]/)
+const verifyStrongPassword = (password) => !!(password.match(/[0-9]/)
       && password.match(/[a-z]/)
       && password.match(/[A-Z]/)
-      && password.match(/[^0-9a-z]/i)
-  ) {
-    return true;
-  }
-
-  return false;
-};
+      && password.match(/[^0-9a-z]/i));
 
 const getDurationText = (duration) => {
   const hour = 60;

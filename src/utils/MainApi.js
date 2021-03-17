@@ -106,7 +106,7 @@ class MainApi {
      * Добавляет фильм в сохраненные
      * Нужна авторизация
      * @param {object} data - данные фильма
-     * @returns {Promise} - Промис объект с данными добавленной карточки
+     * @returns {Promise} - Промис объект с данными добавленной фильма
      */
   addMovie(data) {
     return fetch(`${this.baseUrl}/movies`, {
@@ -121,7 +121,7 @@ class MainApi {
      * Удаляет фильм из сохраненных
      * Нужна авторизация
      * @param {string} movieId - Id
-     * @returns {Promise} - Промис объект с данными удаленной карточки
+     * @returns {Promise} - Промис объект с данными удаленной фильма
      */
   deleteMovie(movieId) {
     return fetch(`${this.baseUrl}/movies/${movieId}`, {

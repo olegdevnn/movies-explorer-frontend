@@ -22,6 +22,7 @@ import {
   TIMES_PRELOADER,
   SEED_DATA_TEXT,
   SEED_DATA_NUMBER,
+  FOOTER_MENU,
 } from '../../utils/config';
 import MainApi from '../../utils/MainApi';
 import MoviesApi from '../../utils/MoviesApi';
@@ -95,8 +96,8 @@ function App() {
             email,
           });
 
-          // в брифе, нужно добавить данные в localstorage,
-          // но данные подгружаться с сервера по заданию
+          // todo: в брифе, нужно добавить данные в localstorage,
+          //  но данные подгружаться с сервера по заданию
           localStorage.setItem('user', JSON.stringify({
             name,
             email,
@@ -241,7 +242,7 @@ function App() {
     }, TIMES_PRELOADER);
   }
 
-  // Функция определения кол-ва добавления фильмов.
+  // Функция для определения кол-во фильмов для добавления по кнопке Еще.
   // (дополняет, если ряд неполный)
   function getCountCardsRow(moviesViewedSum) {
     let cardsRow = 3;
@@ -495,7 +496,9 @@ function App() {
           />
         </Switch>
         <Route exact strict path="/(|movies|saved-movies)">
-          <Footer />
+          <Footer
+            menu={FOOTER_MENU}
+          />
         </Route>
       </div>
     </CurrentUserContext.Provider>
