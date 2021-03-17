@@ -70,7 +70,7 @@ const Login = ({
       <div>
         {error && <Error>{error}</Error>}
         <Button
-          isActive={isValid}
+          isActive={isValid && !isLoading}
         >
           Войти
         </Button>

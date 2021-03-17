@@ -113,7 +113,7 @@ const Profile = ({
             className={`profile__button-save 
               ${!isValid ? 'profile__button-save_disabled' : ''}
             `}
-            disabled={!isValid}
+            disabled={!isValid || isLoading}
           >
             Редактировать
           </button>

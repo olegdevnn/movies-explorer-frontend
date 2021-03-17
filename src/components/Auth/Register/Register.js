@@ -87,7 +87,7 @@ const Register = ({
       <div>
         {error && <Error>{error}</Error>}
         <Button
-          isActive={isValid}
+          isActive={isValid && !isLoading}
         >
           Зарегистрироваться
         </Button>
