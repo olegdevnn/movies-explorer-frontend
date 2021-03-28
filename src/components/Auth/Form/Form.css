@@ -1,0 +1,21 @@
+.form {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .form {
+    height: calc(560px - 109px - 38px);
+  }
+}
+
+@media (max-width: 320px) {
+  .form {
+    height: 100%;
+  }
+}

@@ -1,0 +1,43 @@
+.button-more {
+  padding: 50px 70px 80px;
+}
+
+.button-more__button {
+  align-items: center;
+
+  width: 100%;
+  margin: 0;
+  padding: 10px;
+
+  cursor: pointer;
+  text-align: center;
+
+  border: 0;
+  border-radius: 6px;
+  outline: 0;
+  background: #f9f9f9;
+
+  font-size: 12px;
+
+  font-weight: 500;
+  line-height: 15px;
+}
+
+.button-more__button:hover {
+  transition: opacity 0.2s linear;
+
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .button-more {
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+}
+
+@media (max-width: 320px) {
+  .button-more {
+    padding: 50px 10px 80px;
+  }
+}

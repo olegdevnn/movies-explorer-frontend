@@ -1,0 +1,44 @@
+.movies-message {
+  padding: 0 70px;
+}
+
+.movies-message__title {
+  padding: 22px;
+
+  text-align: center;
+
+  white-space: pre-line;
+  letter-spacing: -0.04em;
+
+  background: #eee;
+
+  font-size: 22px;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 27px;
+}
+
+@media (max-width: 768px) {
+  .movies-message {
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+
+  .movies-message__title {
+    padding: 20px;
+
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 320px) {
+  .movies-message {
+    padding: 0 20px 0;
+  }
+
+  .movies-message__title {
+    padding: 14px;
+
+    font-size: 16px;
+  }
+}
